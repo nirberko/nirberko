@@ -7,6 +7,8 @@ Fast learner and passionate about new technologies and frameworks.
 ## Get in touch
 - Twitter: https://twitter.com/nirberko
 - Linkedin: https://www.linkedin.com/in/nirberko
+
+![visitors](https://visitor-badge.glitch.me/badge?page_id=nirberko.nirberko)
 <!--
 **nirberko/nirberko** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
