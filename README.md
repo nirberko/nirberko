@@ -1,3 +1,12 @@
+# Nir Berko - @nirberko
+
+I’m an Experienced Full-Stack Web Developer specializing in front-end development and design.
+Experienced in all stages of a from-scratch web application development.
+Fast learner and passionate about new technologies and frameworks.
+
+## Get in touch
+- Twitter: https://twitter.com/nirberko
+- Linkedin: https://www.linkedin.com/in/nirberko
 <!--
 **nirberko/nirberko** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
