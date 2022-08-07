@@ -1,7 +1,9 @@
+<img src="./assets/header.png">
+
 <h1 align="center">Hi 👋, I'm Nir Berko</h1>
 <h3 align="center">A passionate full stack developer from Israel</h3>
 
-- 🔭 I’m currently working at [Hunters](https://hunters.ai)
+- 🔭 I’m currently working at [Skyline](https://skyline.ai)
 
 - 👯 I’m looking to collaborate on **open source projects**
 
