@@ -7,8 +7,6 @@
 
 - 👯 I’m looking to collaborate on **open source projects**
 
-- 🤝 I’m looking for help with [Deno Israel Meetup](https://www.meetup.com/DenoIsrael/)
-
 - 📫 How to reach me **nirberko@gmail.com**
 
 - 📄 Know about my experiences [on Linkedin](https://www.linkedin.com/in/nirberko/)
