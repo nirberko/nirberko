@@ -449,20 +449,6 @@ footer{padding-block:40px;color:var(--muted);font-size:.8rem}
   <div class="card"><span class="pill" style="color:var(--p-bal);align-self:flex-start">Stability &amp; appreciation</span><h3>Parma · 44134 / 44129 &amp; Brook Park · 44142</h3><p>Lower yield (~9–10%) but violent crime at a third of the US median, 4★ schools, no point-of-sale inspection in Parma, a landlord-friendly court and long tenant stays. Brook Park is the hottest market in the county (7 days on market) with the Browns dome due in 2029.</p></div>
   <div class="card"><span class="pill" style="color:var(--p-avoid);align-self:flex-start">Pass on</span><h3>44127 · 44105 · 44104 · 44108 · 44103 · 44112</h3><p>Unless you know the exact block. Headline yields of 19–25% come from collapsing values (−4 to −11% YoY), sale-to-list of 94–96%, housing vacancy of 18–28%, vacant-house theft and thin resale. In 44105 you also bid against institutions (411 LLC purchases in five months). Most experienced investors on BiggerPockets and Reddit say avoid, and the 2026 assault trend is rising.</p></div>
  </div>
-
- <h3 style="margin:28px 0 10px">Deal check</h3>
- <div class="card" id="calc">
-  <div class="toolbar" style="gap:10px">
-   <label style="display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--muted)">ZIP<select id="c-zip" style="font:inherit;font-size:.9rem;padding:6px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink)"></select></label>
-   <label style="display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--muted)">Price<input id="c-price" type="number" step="1000" style="max-width:130px"></label>
-   <label style="display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--muted)">Monthly rent<input id="c-rent" type="number" step="25" style="max-width:120px"></label>
-   <label style="display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--muted)">Tax %<input id="c-tax" type="number" step="0.05" style="max-width:90px"></label>
-   <label style="display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--muted)">Down %<input id="c-down" type="number" step="5" value="25" style="max-width:80px"></label>
-   <label style="display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--muted)">Rate %<input id="c-rate" type="number" step="0.125" value="7" style="max-width:90px"></label>
-  </div>
-  <div class="grid-stats" id="c-out" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))"></div>
-  <p style="font-size:.78rem;color:var(--muted)">Choosing a ZIP fills in its typical single-family value and HUD's 3BR rent (roughly the voucher contract rent after utilities); edit any field. Expenses: 8% vacancy, 10% management, 12% repairs and capex, $1,300 insurance, $300 registration and inspections, plus tax on the price. Thirty-year loan. Rule-of-thumb estimates, not underwriting.</p>
- </div>
 </section>
 
 <section class="block" id="sources">
@@ -749,25 +735,9 @@ function s8top(){
   t.querySelectorAll('tbody tr').forEach(r=>r.onclick=()=>select(r.dataset.zip,true));
 }
 
-// ---------- deal calculator ----------
-const TAX={'44137':2.47,'44125':2.61,'44146':2.49,'44128':1.96,'44122':1.8,'44120':3.5,'44118':2.86,'44121':2.76,'44117':2.18,'44123':2.18,'44132':2.18,'44143':2.41,'44124':2.63,'44139':1.92,'44022':2.13,'44102':2.3,'44103':2.3,'44104':2.3,'44105':2.3,'44106':2.3,'44108':2.3,'44109':2.3,'44110':2.3,'44111':2.3,'44113':2.3,'44114':2.3,'44115':2.3,'44119':2.3,'44127':2.3,'44135':2.3};
-function calc(){
-  const sel=$('#c-zip'); if(!sel) return;
-  sel.innerHTML=ZIPS.map(z=>`<option value="${z}" ${z===selected?'selected':''}>${z} · ${Z[z].name||''}</option>`).join('');
-  const fill=()=>{const o=Z[sel.value]; $('#c-price').value=Math.round((o.zhvi_sfr||o.zhvi)/1000)*1000; $('#c-rent').value=o.safmr?o.safmr[3]:(o.zori||1500); $('#c-tax').value=TAX[sel.value]||2.4; run();};
-  const run=()=>{
-    const P=+$('#c-price').value||0, R=+$('#c-rent').value||0, tx=(+$('#c-tax').value||0)/100, dn=(+$('#c-down').value||0)/100, rt=(+$('#c-rate').value||0)/100/12;
-    const gross=R*12, egi=gross*0.92, mgmt=egi*0.10, rep=gross*0.12, tax=P*tx, ins=1300, reg=300;
-    const noi=egi-mgmt-rep-tax-ins-reg, loan=P*(1-dn), n=360, pmt=rt?loan*rt/(1-Math.pow(1+rt,-n)):loan/n, debt=pmt*12, cf=noi-debt, cash=P*dn+P*0.03;
-    const st=(l,v,x='',cls='')=>`<div><div class="l">${l}</div><div class="v ${cls}">${v}</div>${x?`<div class="x">${x}</div>`:''}</div>`;
-    $('#c-out').innerHTML=st('Gross rent / yr',fd(gross),fpp(gross/P*100)+' of price')+st('Expenses / yr',fd((gross-egi)+mgmt+rep+tax+ins+reg),'vacancy, mgmt, repairs, tax, ins')+st('NOI',fd(noi))+st('Cap rate',fpp(noi/P*100))+st('Mortgage / mo',fd(pmt))+st('Cash flow / mo',fd(cf/12),'',cf<0?'down':'up')+st('Cash-on-cash',fpp(cf/cash*100),'incl. ~3% closing',cf<0?'down':'up');
-  };
-  sel.onchange=fill; ['#c-price','#c-rent','#c-tax','#c-down','#c-rate'].forEach(s=>$(s).oninput=run); fill();
-}
-
 function boot(){
   try{const k=localStorage.getItem('cra-metric'); const m=METRICS.find(x=>x.k===k); if(m) metric=m;}catch(_){}
-  kpis(); metricBar(); drawMap(); renderDossier(); chips(); table(); charts(); s8top(); calc();
+  kpis(); metricBar(); drawMap(); renderDossier(); chips(); table(); charts(); s8top();
   const hash=location.hash.slice(1); if(/^\d{5}$/.test(hash)&&Z[hash]) select(hash);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{paint();charts();table();renderDossier();s8top();});
   new MutationObserver(()=>{paint();charts();table();renderDossier();s8top();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
