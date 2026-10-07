@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import htm from "htm";
 import { createElement as h } from "react";
@@ -38,14 +38,11 @@ function App() {
   const [site] = useJson("site.json");
   const [index, error] = useJson("pages.json");
   const [q, setQ] = useState("");
-  const [tag, setTag] = useState("");
 
   const pages = index?.pages ?? [];
-  const tags = useMemo(() => [...new Set(pages.flatMap((p) => p.tags))].sort(), [pages]);
   const shown = pages.filter(
     (p) =>
-      (!tag || p.tags.includes(tag)) &&
-      (!q || `${p.title} ${p.description} ${p.tags.join(" ")}`.toLowerCase().includes(q.toLowerCase())),
+      !q || `${p.title} ${p.description} ${p.tags.join(" ")}`.toLowerCase().includes(q.toLowerCase()),
   );
 
   useEffect(() => {
@@ -69,12 +66,6 @@ function App() {
           ? html`<input class="search" type="search" placeholder="Search pages" aria-label="Search pages" value=${q} onInput=${(e) => setQ(e.target.value)} />`
           : null}
       </div>
-      ${tags.length > 1
-        ? html`<div class="chips" role="group" aria-label="Filter by tag">
-            <button type="button" aria-pressed=${!tag} onClick=${() => setTag("")}>All</button>
-            ${tags.map((t) => html`<button type="button" key=${t} aria-pressed=${tag === t} onClick=${() => setTag(tag === t ? "" : t)}>${t}</button>`)}
-          </div>`
-        : null}
       ${error
         ? html`<p class="empty">Couldn't load the page list. If you're running this locally, build first with <code>node scripts/build.mjs</code>.</p>`
         : !index

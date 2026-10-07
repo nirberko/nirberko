@@ -35,9 +35,6 @@ code { font-family: var(--f-mono); font-size: .9em; }
 .shelf-head h2 { font-size: 1.7rem; font-weight: 800; font-stretch: 80%; display: flex; align-items: baseline; gap: 10px; }
 .count { font: 500 .8rem var(--f-mono); color: var(--muted); }
 .search { font: inherit; font-size: .9rem; padding: 7px 11px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); width: min(100%, 260px); }
-.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-.chips button { font: 500 .8rem var(--f-body); border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); padding: 5px 11px; border-radius: 999px; cursor: pointer; }
-.chips button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 16px; }
 .tile { display: flex; flex-direction: column; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; text-decoration: none; color: inherit; min-width: 0; transition: border-color .15s, transform .15s; }

@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: an investor's worksheet. Filters bar, shortlist, then scatter + deal calculator, then ZIP / metro rankings. */
+/* Layout: an investor's worksheet. Filters bar, shortlist, then the rent-vs-price scatter, then ZIP / metro rankings. */
 :root {
   --bg: #f3f5f2;
   --surface: #ffffff;
@@ -106,7 +106,7 @@ input[type="range"] { width: 140px; accent-color: var(--accent); }
 .src { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
 .src.metro { border-color: var(--pick); color: var(--pick); }
 
-.main { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
 .chartbox { padding: 16px 16px 12px; display: grid; gap: 8px; position: relative; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 10px; }
@@ -116,19 +116,6 @@ input[type="range"] { width: 140px; accent-color: var(--accent); }
 .tip b { font-family: var(--f-display); font-stretch: 88%; font-size: 14px; }
 .tip .n { font-family: var(--f-mono); }
 
-.calc { padding: 16px; display: grid; gap: 14px; }
-.calc .head { display: grid; gap: 2px; }
-.calc .where { font-family: var(--f-display); font-stretch: 88%; font-weight: 800; font-size: 24px; line-height: 1.1; }
-.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
-.fields .ctl input { width: 100%; }
-.out { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.out div { background: var(--surface); padding: 10px 12px; display: grid; gap: 2px; }
-.out .k { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); font-weight: 600; }
-.out .v { font: 500 19px var(--f-mono); font-variant-numeric: tabular-nums; }
-.out .v.pos { color: var(--good); } .out .v.neg { color: var(--bad); }
-.breakdown { font-size: 12.5px; color: var(--ink-2); display: grid; gap: 3px; }
-.breakdown div { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--line-2); padding-block: 2px; }
-.breakdown span:last-child { font-family: var(--f-mono); color: var(--ink); }
 
 .tablebox { padding: 16px 0 10px; display: grid; gap: 10px; }
 .tablebox > .sectionhead { padding-inline: 16px; }
@@ -160,7 +147,7 @@ td .sub { color: var(--ink-3); font-size: 12px; margin-left: 6px; }
   <header class="top">
     <span class="eyebrow">United States · Housing Choice Voucher · 3 bedrooms</span>
     <h1>Section 8 3BR Yield Finder</h1>
-    <p>Every US ZIP's 3-bedroom voucher rent set against what a 3-bedroom home costs there. You want a high rent and a low price, so ZIPs rank by monthly rent ÷ price (the "1% rule"). Click any ZIP to run the numbers on a deal.</p>
+    <p>Every US ZIP's 3-bedroom voucher rent set against what a 3-bedroom home costs there. You want a high rent and a low price, so ZIPs rank by monthly rent ÷ price (the "1% rule"). Click any ZIP to highlight it on the chart.</p>
     <div class="stamp">
       <span><b>Rents</b> HUD FY2026 Fair Market Rents, ZIP-level and metro-wide</span>
       <span><b>Rent rules</b> HUD's 65 mandatory Small Area FMR metros</span>
@@ -244,35 +231,6 @@ td .sub { color: var(--ink-3); font-size: 12px; margin-left: 6px; }
       </div>
       <span class="muted small">Each dot is a ZIP. Up and to the left is better. Dashed lines mark equal rent ÷ price.</span>
       <div class="canvaswrap"><canvas id="chart" role="img" aria-label="Scatter of 3-bedroom voucher rent against home price for each ZIP code"></canvas><div class="tip" id="tip" hidden></div></div>
-    </div>
-
-    <div class="panel calc" id="calc" aria-live="polite">
-      <div class="head">
-        <span class="eyebrow">Deal calculator</span>
-        <span class="where" id="cWhere"></span>
-        <span class="muted small" id="cSub"></span>
-      </div>
-      <div class="fields">
-        <div class="ctl"><label for="cPrice">Purchase price $</label><input id="cPrice" type="number" step="1000"></div>
-        <div class="ctl"><label for="cRehab">Rehab to pass inspection $</label><input id="cRehab" type="number" step="500" value="10000"></div>
-        <div class="ctl"><label for="cRent">Monthly rent $</label><input id="cRent" type="number" step="10"></div>
-        <div class="ctl"><label for="cTax">Property tax % of price</label><input id="cTax" type="number" step="0.1" value="2.0"></div>
-        <div class="ctl"><label for="cIns">Insurance $/yr</label><input id="cIns" type="number" step="50" value="1800"></div>
-        <div class="ctl"><label for="cVac">Vacancy %</label><input id="cVac" type="number" step="1" value="5"></div>
-        <div class="ctl"><label for="cRep">Repairs + capex %</label><input id="cRep" type="number" step="1" value="12"></div>
-        <div class="ctl"><label for="cMgmt">Management %</label><input id="cMgmt" type="number" step="1" value="10"></div>
-        <div class="ctl"><label for="cDown">Down payment %</label><input id="cDown" type="number" step="5" value="25"></div>
-        <div class="ctl"><label for="cRate">Loan rate %</label><input id="cRate" type="number" step="0.125" value="7.25"></div>
-      </div>
-      <div class="out">
-        <div><span class="k">Cap rate</span><span class="v" id="oCap"></span></div>
-        <div><span class="k">NOI / yr</span><span class="v" id="oNoi"></span></div>
-        <div><span class="k">Cash flow / mo, all cash</span><span class="v" id="oCash"></span></div>
-        <div><span class="k">Cash flow / mo, financed</span><span class="v" id="oFin"></span></div>
-        <div><span class="k">Cash-on-cash, financed</span><span class="v" id="oCoc"></span></div>
-        <div><span class="k">Cash needed</span><span class="v" id="oNeed"></span></div>
-      </div>
-      <div class="breakdown" id="breakdown"></div>
     </div>
   </div>
 
@@ -502,7 +460,7 @@ function renderTable() {
     head(ZIP_COLS);
     const rows = sortBy([...CUR]);
     const shown = rows.slice(0, F.limit);
-    document.getElementById("tCount").textContent = `Showing ${shown.length.toLocaleString()} of ${rows.length.toLocaleString()} ZIPs · click a row to load it into the calculator`;
+    document.getElementById("tCount").textContent = `Showing ${shown.length.toLocaleString()} of ${rows.length.toLocaleString()} ZIPs · click a row to highlight it on the chart`;
     tb.innerHTML = shown.map(r => {
       const yoy = r.yoy == null ? "—" : `<span class="${r.yoy >= 0 ? "up" : "down"}">${r.yoy >= 0 ? "+" : ""}${(r.yoy * 100).toFixed(1)}%</span>`;
       const t = tierOf(r.ratio);
@@ -520,7 +478,7 @@ function renderTable() {
     head(METRO_COLS);
     const rows = sortBy(metroAgg());
     const shown = rows.slice(0, F.limit);
-    document.getElementById("tCount").textContent = `${rows.length.toLocaleString()} HUD areas with 3+ matching ZIPs · click a row to load its best ZIP`;
+    document.getElementById("tCount").textContent = `${rows.length.toLocaleString()} HUD areas with 3+ matching ZIPs · click a row to highlight its best ZIP`;
     tb.innerHTML = shown.map(r => `<tr data-zip="${r.bestZip}" tabindex="0">
         <td class="l"><span class="city">${r.aname}</span></td><td class="n">${r.n}</td>
         <td class="l"><span class="src ${r.des || F.rule === "zip" ? "" : "metro"}">${r.rule}</span></td>
@@ -530,34 +488,6 @@ function renderTable() {
   }
 }
 
-/* Calculator */
-const val = id => parseFloat(document.getElementById(id).value) || 0;
-function loadCalc(zip) {
-  const r0 = ALL.find(x => x.zip === zip); if (!r0) return;
-  const r = derive(r0);
-  document.getElementById("cWhere").textContent = `${r.city}, ${r.st} ${r.zip}`;
-  document.getElementById("cSub").textContent = `${r.aname} · payment standard ${money(r.ps)} (${r.src} rent) · typical 3BR ${money(r.p3)}`;
-  document.getElementById("cPrice").value = Math.round((r.price || r.p3 || r.pb) / 1000) * 1000;
-  document.getElementById("cRent").value = r.rent;
-  calc();
-}
-function calc() {
-  const price = val("cPrice"), rehab = val("cRehab"), rent = val("cRent");
-  const gross = rent * 12, vac = gross * val("cVac") / 100, egi = gross - vac;
-  const tax = price * val("cTax") / 100, ins = val("cIns"), rep = egi * val("cRep") / 100, mgmt = egi * val("cMgmt") / 100;
-  const noi = egi - tax - ins - rep - mgmt, basis = price + rehab, cap = basis ? noi / basis : NaN;
-  const loan = price * (1 - val("cDown") / 100), i = val("cRate") / 100 / 12, n = 360;
-  const pmt = loan > 0 ? (i ? loan * i / (1 - Math.pow(1 + i, -n)) : loan / n) : 0;
-  const finCf = noi / 12 - pmt, need = price - loan + rehab + price * 0.03;
-  const set = (id, v, sign) => { const e = document.getElementById(id); e.textContent = v; e.className = "v" + (sign == null ? "" : sign >= 0 ? " pos" : " neg"); };
-  set("oCap", pct(cap, 1)); set("oNoi", money(noi), noi); set("oCash", money(noi / 12), noi);
-  set("oFin", money(finCf), finCf); set("oCoc", pct(need ? finCf * 12 / need : NaN, 1), finCf); set("oNeed", money(need));
-  document.getElementById("breakdown").innerHTML = [
-    ["Gross rent / yr", money(gross)], ["Vacancy", "−" + money(vac)], ["Property tax", "−" + money(tax)], ["Insurance", "−" + money(ins)],
-    ["Repairs + capex", "−" + money(rep)], ["Management", "−" + money(mgmt)], ["Mortgage / mo (30-yr)", money(pmt)], ["Cash needed incl. 3% closing", money(need)],
-  ].map(([a, b]) => `<div><span>${a}</span><span>${b}</span></div>`).join("");
-}
-
 function render() {
   document.getElementById("minRentV").textContent = F.minRent ? money(F.minRent) : "Any";
   document.getElementById("minPriceV").textContent = F.minPrice ? kmoney(F.minPrice) : "Any";
@@ -565,13 +495,13 @@ function render() {
   document.getElementById("ruleHelp").textContent = RULE_HELP[F.rule];
   compute(); renderShortlist(); renderChart(); renderTable();
 }
-function select(zip) { F.sel = zip; renderShortlist(); renderChart(); renderTable(); loadCalc(zip); }
+function select(zip) { F.sel = zip; renderShortlist(); renderChart(); renderTable(); }
 
 function seg(id, key, parse, after) {
   document.getElementById(id).addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     e.currentTarget.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-    F[key] = parse(b.dataset.v); if (after) after(); render(); loadCalc(F.sel);
+    F[key] = parse(b.dataset.v); if (after) after(); render();
   });
 }
 seg("ruleSeg", "rule", v => v);
@@ -583,7 +513,7 @@ const on = (id, ev, fn) => document.getElementById(id).addEventListener(ev, fn);
 let qt;
 on("state", "change", e => { F.state = e.target.value; F.limit = 100; render(); });
 on("q", "input", e => { clearTimeout(qt); qt = setTimeout(() => { F.q = e.target.value; F.limit = 100; render(); }, 150); });
-on("ua", "input", e => { F.ua = parseFloat(e.target.value) || 0; render(); loadCalc(F.sel); });
+on("ua", "input", e => { F.ua = parseFloat(e.target.value) || 0; render(); });
 on("minRent", "input", e => { F.minRent = +e.target.value; render(); });
 on("minPrice", "input", e => { F.minPrice = +e.target.value; if (F.minPrice >= F.maxPrice) { F.maxPrice = F.minPrice + 10000; document.getElementById("maxPrice").value = F.maxPrice; } render(); });
 on("maxPrice", "input", e => { F.maxPrice = +e.target.value; if (F.maxPrice <= F.minPrice) { F.minPrice = Math.max(0, F.maxPrice - 10000); document.getElementById("minPrice").value = F.minPrice; } render(); });
@@ -599,12 +529,11 @@ on("thead", "click", e => {
   F.sortDir = F.sortK === k ? (F.sortDir === "desc" ? "asc" : "desc") : (asc ? "asc" : "desc");
   F.sortK = k; F.limit = 100; renderTable();
 });
-on("calc", "input", e => { if (e.target.matches("input")) calc(); });
 document.getElementById("legend").innerHTML = TIERS.map(t => `<span class="chip ${t.cls}">${t.name}</span>`).join("");
 document.getElementById("covN").textContent = ALL.length.toLocaleString();
 let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(renderChart, 120); });
 try { window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderChart); new MutationObserver(renderChart).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); } catch (e) {}
-render(); loadCalc(F.sel);
+render();
 </script>
 
 </body></html>
