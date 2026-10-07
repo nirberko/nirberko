@@ -7,6 +7,11 @@
       "label": "LinkedIn",
       "href": "https://www.linkedin.com/in/nirberko/",
       "icon": "linkedin"
+    },
+    {
+      "label": "Email me@nirberko.fyi",
+      "href": "mailto:me@nirberko.fyi",
+      "icon": "email"
     }
   ]
 }
