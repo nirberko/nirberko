@@ -17,7 +17,7 @@ add tags, reorder, or hide a page (its link keeps working), edit `pages.config.j
 "my-page": { "title": "Better title", "description": "One line about it", "tags": ["Topic"], "order": 1, "hidden": false }
 ```
 
-Every page gets a small "← Nir Berko" back button in the bottom-left corner, added during the build (your HTML files are not changed).
+Every page gets a small "← Nir Berko" back button in the top-right corner, added during the build (your HTML files are not changed).
 To leave it off a page, set `"backButton": false` for that page in `pages.config.json`.
 
 To remove a page, delete its file from `p/` and push. To change your name, tagline or links, edit `site.json`.

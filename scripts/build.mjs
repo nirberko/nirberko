@@ -85,7 +85,7 @@ const backButton = `
   const host = document.createElement("site-back-button");
   const root = host.attachShadow({ mode: "open" });
   root.innerHTML = \`<style>
-    a { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 2147483647;
+    a { position: fixed; right: 16px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 2147483647;
         display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 999px;
         background: rgba(18, 18, 17, .86); color: #e9e6df; border: 1px solid rgba(255, 255, 255, .1);
         font: 15px/1 "Newsreader", "Iowan Old Style", Georgia, serif; text-decoration: none;
