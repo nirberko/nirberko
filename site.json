@@ -14,5 +14,9 @@
       "icon": "email"
     }
   ],
+  "subscribe": {
+    "action": "https://buttondown.com/api/emails/embed-subscribe/nirberko",
+    "prompt": "Get an email when I publish something new."
+  },
   "pageTheme": "light"
 }

@@ -30,6 +30,38 @@ function useJson(url) {
   return [data, error];
 }
 
+// Posts to a newsletter provider's embed endpoint (site.json "subscribe"). The response is opaque (no-cors),
+// so only a network failure counts as an error; the provider sends its own confirmation email.
+function Subscribe({ config }) {
+  const [status, setStatus] = useState("idle");
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const body = new FormData();
+    body.append(config.field ?? "email", e.target.email.value);
+    setStatus("sending");
+    fetch(config.action, { method: "POST", body, mode: "no-cors" })
+      .then(() => {
+        setStatus("done");
+        window.posthog?.capture("subscribed");
+      })
+      .catch(() => setStatus("error"));
+  };
+
+  return html`
+    <section class="subscribe">
+      <p>${config.prompt ?? "Get an email when I publish something new."}</p>
+      ${status === "done"
+        ? html`<p class="subscribe-status" role="status">Thanks. Check your inbox to confirm.</p>`
+        : html`<form onSubmit=${onSubmit}>
+            <input type="email" name="email" required placeholder="you@example.com" aria-label="Email address" autocomplete="email" />
+            <button type="submit" disabled=${status === "sending"}>${status === "sending" ? "…" : "Subscribe"}</button>
+          </form>
+          ${status === "error" ? html`<p class="subscribe-status" role="alert">That didn't go through. Try again?</p>` : null}`}
+    </section>
+  `;
+}
+
 function App() {
   const [site] = useJson("site.json");
   const [index, error] = useJson("pages.json");
@@ -60,6 +92,8 @@ function App() {
                 )}
               </ul>`
             : html`<p class="note">Nothing here yet.</p>`}
+
+      ${site?.subscribe?.action ? html`<${Subscribe} config=${site.subscribe} />` : null}
 
       <footer>
         <hr />
