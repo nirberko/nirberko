@@ -25,9 +25,10 @@ h1 { font-size: clamp(2.4rem, 6vw, 2.9rem); font-weight: 400; letter-spacing: -0
 .meta { display: block; margin-top: 4px; font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .note { color: var(--muted); font-style: italic; margin-top: 72px; }
 
-footer { margin-top: 88px; }
-footer hr { width: 24px; border: 0; border-top: 1px solid var(--rule); margin: 0 auto 26px; }
-footer nav { display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; }
-footer a { color: var(--muted); text-decoration: none; font-size: 1.05rem; }
-footer a:hover { color: var(--ink); }
-@media (prefers-reduced-motion: reduce) { .pages a { transition: none; } }
+footer { margin-top: 96px; }
+footer hr { border: 0; border-top: 1px solid var(--rule); margin: 0 0 28px; }
+footer nav { display: flex; justify-content: center; gap: 22px; }
+footer nav a { color: var(--muted); display: inline-flex; padding: 4px; transition: color .15s; }
+footer nav a:hover { color: var(--ink); }
+.copy { margin: 18px 0 0; font-family: var(--mono); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .pages a, footer nav a { transition: none; } }
