@@ -55,7 +55,7 @@ function App() {
                 ${pages.map(
                   (p) => html`<li key=${p.slug}>
                     <a href=${p.href} title=${p.description || undefined}>${p.title}</a>
-                    <span class="meta">${[p.tags[0], monthYear(p.updated)].filter(Boolean).join(" · ")}</span>
+                    <span class="meta">${monthYear(p.updated)}</span>
                   </li>`,
                 )}
               </ul>`
