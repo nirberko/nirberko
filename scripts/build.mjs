@@ -3,6 +3,7 @@
 //   - writes pages.json, the list the home page shows, from each p/*.html file
 // Run locally with:  node scripts/build.mjs  then  npx serve _site
 import { execFileSync } from "node:child_process";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -63,6 +64,16 @@ fs.mkdirSync(path.join(OUT, "p"), { recursive: true });
 for (const f of ["index.html", "app.js", "styles.css", "site.json", "404.html", "CNAME", "favicon.svg"]) {
   if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f));
 }
+// Cache-bust: point index.html at app.js / styles.css with a content hash, so browsers
+// load the new files right after a deploy instead of a cached copy.
+const hash = (f) => crypto.createHash("sha1").update(fs.readFileSync(path.join(ROOT, f))).digest("hex").slice(0, 10);
+const indexPath = path.join(OUT, "index.html");
+fs.writeFileSync(
+  indexPath,
+  fs.readFileSync(indexPath, "utf8")
+    .replace('href="styles.css"', `href="styles.css?v=${hash("styles.css")}"`)
+    .replace('src="app.js"', `src="app.js?v=${hash("app.js")}"`),
+);
 for (const f of fs.readdirSync(PAGES_DIR)) fs.cpSync(path.join(PAGES_DIR, f), path.join(OUT, "p", f), { recursive: true });
 fs.writeFileSync(path.join(OUT, "pages.json"), JSON.stringify({ generated: new Date().toISOString(), pages }, null, 2));
 fs.writeFileSync(path.join(OUT, ".nojekyll"), "");
