@@ -107,6 +107,13 @@ input[type="range"] { width: 140px; accent-color: var(--accent); }
 .t1 { color: var(--ink-2); background: var(--line-2); } .t1::before { background: var(--seq-1); }
 .src { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
 .src.metro { border-color: var(--pick); color: var(--pick); }
+.lean { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; padding: 2px 8px 2px 6px; border-radius: 999px; white-space: nowrap; }
+.lean::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.lean.red { color: #b23a30; background: #fbe9e6; }
+.lean.blue { color: #2b5ca8; background: #e8eef9; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .lean.red { color: #f0948b; background: #3a1f1d; } :root:not([data-theme="light"]) .lean.blue { color: #9dbdf0; background: #1c2a40; } }
+:root[data-theme="dark"] .lean.red { color: #f0948b; background: #3a1f1d; }
+:root[data-theme="dark"] .lean.blue { color: #9dbdf0; background: #1c2a40; }
 
 .main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
@@ -282,6 +289,7 @@ td .sub { color: var(--ink-3); font-size: 12px; margin-left: 6px; }
     <section class="panel">
       <h3>Before you trust a number</h3>
       <ul>
+        <li><span class="lean red">Red</span> / <span class="lean blue">Blue</span> shows which party's candidate won the state in the 2024 presidential election (Republican = red, Democratic = blue). It's a rough proxy only: what matters for a rental is the state and city landlord-tenant law (eviction timelines, rent control, source-of-income rules), which you should check directly.</li>
         <li>The payment standard covers rent plus tenant-paid utilities. If the tenant pays utilities, enter the local utility allowance.</li>
         <li>Property tax and insurance vary a lot by state and city. Tax runs from under 1% of value to over 4% in some Midwest and Northeast cities. Insurance is far higher in Florida, Louisiana and Texas.</li>
         <li>HUD publishes rents up to 4 bedrooms. For 5+ this page uses HUD's rule of the 4-bedroom rent plus 15%. The tenant's voucher size, not the house, sets the payment standard, so a 4-bedroom voucher in a 5-bedroom house pays the 4-bedroom rent.</li>
@@ -317,6 +325,10 @@ const RULE_HELP = {
 
 const BEDS = [1, 2, 3, 4, 5];
 const bedName = b => b === 5 ? "5+ BR" : b + " BR";
+// Red / blue = which party's presidential candidate won the state in 2024 (DC counts as blue).
+const RED_STATES = new Set(["AL","AK","AZ","AR","FL","GA","ID","IN","IA","KS","KY","LA","MI","MS","MO","MT","NE","NV","NC","ND","OH","OK","PA","SC","SD","TN","TX","UT","WV","WI","WY"]);
+const BLUE_STATES = new Set(["CA","CO","CT","DE","DC","HI","IL","ME","MD","MA","MN","NH","NJ","NM","NY","OR","RI","VT","VA","WA"]);
+const leanOf = st => RED_STATES.has(st) ? "Red" : BLUE_STATES.has(st) ? "Blue" : null;
 const ALL = [];
 for (const r of ROWS) {
   const a = AREAS[r[3]];
@@ -325,7 +337,7 @@ for (const r of ROWS) {
     if (!p && !pb) continue;
     const zipR = b < 5 ? r[3 + b] : Math.round(r[7] * 1.15), metroR = b < 5 ? a[b] : Math.round(a[4] * 1.15);
     const y = r[12 + b];
-    ALL.push({ key: r[0] + "-" + b, zip: r[0], beds: b, city: r[1], st: r[2], area: r[3], aname: a[0], metroR, des: !!a[5], isMetro: !!a[6], zipR, p, yoy: y == null ? null : y / 1000, pb, sr: r[19] });
+    ALL.push({ key: r[0] + "-" + b, zip: r[0], beds: b, city: r[1], st: r[2], lean: leanOf(r[2]), area: r[3], aname: a[0], metroR, des: !!a[5], isMetro: !!a[6], zipR, p, yoy: y == null ? null : y / 1000, pb, sr: r[19] });
   }
 }
 const ZIPN = ROWS.length;
@@ -461,7 +473,7 @@ cv.addEventListener("click", e => { const p = nearest(e); if (p) { select(p[2].k
 
 /* Tables */
 const ZIP_COLS = [
-  ["city", "ZIP / City", "l"], ["beds", "Beds"], ["aname", "HUD area", "l"], ["ps", "Payment std"], ["rent", "Rent you collect"],
+  ["city", "ZIP / City", "l"], ["lean", "Red / blue", "l"], ["beds", "Beds"], ["aname", "HUD area", "l"], ["ps", "Payment std"], ["rent", "Rent you collect"],
   ["p", "Typical home"], ["pb", "Lower-third"], ["ratio", "Rent ÷ price"], ["gy", "Gross yield"], ["yoy", "Price 1-yr"], ["tier", "Tier", "l"],
 ];
 const METRO_COLS = [
@@ -503,6 +515,7 @@ function renderTable() {
       const t = tierOf(r.ratio);
       return `<tr data-key="${r.key}" tabindex="0" aria-selected="${r.key === F.sel}">
         <td class="l"><span class="n" style="font-family:var(--f-mono);color:var(--ink-3);margin-right:8px">${r.zip}</span><span class="city">${r.city}</span><span class="sub">${r.st}</span></td>
+        <td class="l">${r.lean ? `<span class="lean ${r.lean.toLowerCase()}" title="${r.lean === "Red" ? "Republican" : "Democratic"} candidate won ${r.st} in the 2024 presidential election">${r.lean}</span>` : "—"}</td>
         <td class="n">${bedName(r.beds)}</td>
         <td class="l" style="max-width:220px;overflow:hidden;text-overflow:ellipsis" title="${r.aname}">${r.aname}</td>
         <td class="n">${money(r.ps)} <span class="src ${r.src !== "ZIP" ? "metro" : ""}">${r.src}</span></td>
@@ -564,7 +577,7 @@ on("tbody", "click", e => { const tr = e.target.closest("tr"); if (tr) select(tr
 on("tbody", "keydown", e => { if (e.key === "Enter") { const tr = e.target.closest("tr"); if (tr) select(tr.dataset.key); } });
 on("thead", "click", e => {
   const b = e.target.closest("button"); if (!b) return;
-  const k = b.dataset.k, asc = ["city", "aname", "p", "pb", "medPrice", "best", "rule"].includes(k);
+  const k = b.dataset.k, asc = ["city", "lean", "aname", "p", "pb", "medPrice", "best", "rule"].includes(k);
   F.sortDir = F.sortK === k ? (F.sortDir === "desc" ? "asc" : "desc") : (asc ? "asc" : "desc");
   F.sortK = k; F.limit = 100; renderTable();
 });
