@@ -74,7 +74,41 @@ fs.writeFileSync(
     .replace('href="styles.css"', `href="styles.css?v=${hash("styles.css")}"`)
     .replace('src="app.js"', `src="app.js?v=${hash("app.js")}"`),
 );
-for (const f of fs.readdirSync(PAGES_DIR)) fs.cpSync(path.join(PAGES_DIR, f), path.join(OUT, "p", f), { recursive: true });
+// Copy pages, injecting a small "back to home" button into each HTML page.
+// The source files in p/ are never modified. Opt out per page with "backButton": false in pages.config.json.
+const site = JSON.parse(fs.readFileSync(path.join(ROOT, "site.json"), "utf8"));
+const backLabel = `← ${site.name ?? "Home"}`.replace(/[<>&"`$\\]/g, "");
+const backButton = `
+<!-- back button: injected by scripts/build.mjs -->
+<script>
+(() => {
+  const host = document.createElement("site-back-button");
+  const root = host.attachShadow({ mode: "open" });
+  root.innerHTML = \`<style>
+    a { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 2147483647;
+        display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 999px;
+        background: rgba(18, 18, 17, .86); color: #e9e6df; border: 1px solid rgba(255, 255, 255, .1);
+        font: 15px/1 "Newsreader", "Iowan Old Style", Georgia, serif; text-decoration: none;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, .28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    a:hover { background: rgba(18, 18, 17, .97); }
+    a:focus-visible { outline: 2px solid #e9e6df; outline-offset: 2px; }
+    @media print { a { display: none; } }
+  </style><a href="../">${backLabel}</a>\`;
+  (document.body || document.documentElement).appendChild(host);
+})();
+</script>
+`;
+for (const f of fs.readdirSync(PAGES_DIR)) {
+  const src = path.join(PAGES_DIR, f), dest = path.join(OUT, "p", f);
+  const slug = f.replace(/\.html$/, "");
+  if (f.endsWith(".html") && config[slug]?.backButton !== false) {
+    const html = fs.readFileSync(src, "utf8");
+    const i = html.toLowerCase().lastIndexOf("</body>");
+    fs.writeFileSync(dest, i === -1 ? html + backButton : html.slice(0, i) + backButton + html.slice(i));
+  } else {
+    fs.cpSync(src, dest, { recursive: true });
+  }
+}
 fs.writeFileSync(path.join(OUT, "pages.json"), JSON.stringify({ generated: new Date().toISOString(), pages }, null, 2));
 fs.writeFileSync(path.join(OUT, ".nojekyll"), "");
 

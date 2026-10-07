@@ -17,6 +17,9 @@ add tags, reorder, or hide a page (its link keeps working), edit `pages.config.j
 "my-page": { "title": "Better title", "description": "One line about it", "tags": ["Topic"], "order": 1, "hidden": false }
 ```
 
+Every page gets a small "← Nir Berko" back button in the bottom-left corner, added during the build (your HTML files are not changed).
+To leave it off a page, set `"backButton": false` for that page in `pages.config.json`.
+
 To remove a page, delete its file from `p/` and push. To change your name, tagline or links, edit `site.json`.
 
 ## Preview locally
@@ -51,5 +54,5 @@ This site deploys with GitHub Actions, so GitHub ignores a `CNAME` file. The dom
 
 - `index.html` + `app.js` – the home page, React 19 loaded from esm.sh (no build step, no npm install).
 - `scripts/build.mjs` – copies the site into `_site/` and generates `pages.json` from the files in `p/`
-  (dates come from git history).
+  (dates come from git history), and injects the back button into each page.
 - `.github/workflows/deploy.yml` – runs the build and deploys to GitHub Pages on every push to `master`.
