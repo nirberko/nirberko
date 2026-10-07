@@ -1,0 +1,13 @@
+{
+  "_help": "Optional per-page overrides, keyed by file name without .html. Any field you leave out is read from the page itself (its <title> and <meta name=\"description\">). Set hidden: true to keep a page off the home page while its link still works. Lower order numbers show first.",
+  "cleveland-rental-atlas": {
+    "description": "Interactive ZIP-code map of Cleveland and Cuyahoga County for rental investors: prices, rents, CMHA Section 8 payment standards, days on market, local rules, and what BiggerPockets and Reddit investors say.",
+    "tags": ["Real estate", "Cleveland", "Section 8"],
+    "order": 1
+  },
+  "section-8-yield-finder": {
+    "description": "Every US ZIP's 3-bedroom Section 8 voucher rent set against what a 3-bedroom home costs there. Filter, compare metros and run the numbers on a deal.",
+    "tags": ["Real estate", "Section 8", "Nationwide"],
+    "order": 2
+  }
+}

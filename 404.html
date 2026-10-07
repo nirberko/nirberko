@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Page not found</title>
+  <style>
+    :root { --bg: #edf1f0; --ink: #132120; --muted: #5b6c69; --accent: #1c5a86; color-scheme: light; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0e1615; --ink: #e3ebe9; --muted: #8fa19e; --accent: #7db7e0; color-scheme: dark; } }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { max-width: 640px; margin: 0 auto; padding: 80px 20px; }
+    .code { font: 500 .75rem ui-monospace, Menlo, monospace; letter-spacing: .12em; color: var(--muted); }
+    h1 { font-size: 2.6rem; margin: 6px 0 12px; line-height: 1.1; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="code">404</div>
+    <h1>Page not found</h1>
+    <p><a id="home" href="/">Back to the home page</a></p>
+  </main>
+  <script>
+    // Works both at the site root (custom domain) and under /nirberko/ on github.io.
+    if (location.pathname.startsWith("/nirberko/")) document.getElementById("home").href = "/nirberko/";
+  </script>
+</body>
+</html>
