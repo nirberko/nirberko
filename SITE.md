@@ -20,6 +20,9 @@ add tags, reorder, or hide a page (its link keeps working), edit `pages.config.j
 Every page gets a small "← Nir Berko" back button in the top-right corner, added during the build (your HTML files are not changed).
 To leave it off a page, set `"backButton": false` for that page in `pages.config.json`.
 
+Every page is also shown in light mode, whatever the visitor's system setting is (set by `"pageTheme"` in `site.json`).
+Use `"light"`, `"dark"`, or `"auto"` to follow the visitor's setting; override one page with `"theme"` in `pages.config.json`.
+
 To remove a page, delete its file from `p/` and push. To change your name, tagline or links, edit `site.json`.
 
 ## Preview locally

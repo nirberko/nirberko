@@ -1,19 +1,20 @@
-/* One centered column: serif name, italic tagline, a list of titles with a small mono meta line. Always dark. */
+/* One centered column: serif name, italic tagline, a list of titles with a small mono meta line. Warm off-white. */
 :root {
-  --bg: #121211;
-  --ink: #e9e6df;
-  --ink-2: #b9b5ac;
-  --muted: #7f7b73;
-  --rule: #2c2b28;
+  --bg: #faf9f5;
+  --ink: #2b2a26;
+  --ink-2: #57544c;
+  --muted: #9a968b;
+  --hover: #6f7d5a;
+  --rule: #e6e3da;
   --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  color-scheme: dark;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 html, body { background: var(--bg); }
 body { margin: 0; color: var(--ink); font-family: var(--serif); -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
-:focus-visible { outline: 1px solid var(--ink-2); outline-offset: 4px; border-radius: 2px; }
+:focus-visible { outline: 1px solid var(--hover); outline-offset: 4px; border-radius: 2px; }
 
 .page { max-width: 640px; margin: 0 auto; padding: clamp(72px, 14vh, 128px) 20px 96px; text-align: center; }
 h1 { font-size: clamp(2.4rem, 6vw, 2.9rem); font-weight: 400; letter-spacing: -0.01em; line-height: 1.1; margin: 0; }
@@ -21,7 +22,7 @@ h1 { font-size: clamp(2.4rem, 6vw, 2.9rem); font-weight: 400; letter-spacing: -0
 
 .pages { list-style: none; margin: 72px 0 0; padding: 0; display: flex; flex-direction: column; gap: 26px; }
 .pages a { font-size: 1.45rem; text-decoration: none; line-height: 1.25; transition: color .15s; }
-.pages a:hover { color: var(--ink-2); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.pages a:hover { color: var(--hover); }
 .meta { display: block; margin-top: 4px; font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .note { color: var(--muted); font-style: italic; margin-top: 72px; }
 
@@ -29,6 +30,6 @@ footer { margin-top: 96px; }
 footer hr { border: 0; border-top: 1px solid var(--rule); margin: 0 0 28px; }
 footer nav { display: flex; justify-content: center; gap: 22px; }
 footer nav a { color: var(--muted); display: inline-flex; padding: 4px; transition: color .15s; }
-footer nav a:hover { color: var(--ink); }
+footer nav a:hover { color: var(--hover); }
 .copy { margin: 18px 0 0; font-family: var(--mono); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .pages a, footer nav a { transition: none; } }

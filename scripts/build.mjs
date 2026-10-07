@@ -87,24 +87,37 @@ const backButton = `
   root.innerHTML = \`<style>
     a { position: fixed; right: 16px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 2147483647;
         display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 999px;
-        background: rgba(18, 18, 17, .86); color: #e9e6df; border: 1px solid rgba(255, 255, 255, .1);
+        background: rgba(250, 249, 245, .92); color: #2b2a26; border: 1px solid #e2dfd6;
         font: 15px/1 "Newsreader", "Iowan Old Style", Georgia, serif; text-decoration: none;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, .28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-    a:hover { background: rgba(18, 18, 17, .97); }
-    a:focus-visible { outline: 2px solid #e9e6df; outline-offset: 2px; }
+        box-shadow: 0 1px 6px rgba(40, 36, 28, .08); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    a:hover { color: #6f7d5a; border-color: #d3cfc3; }
+    a:focus-visible { outline: 2px solid #6f7d5a; outline-offset: 2px; }
     @media print { a { display: none; } }
   </style><a href="../">${backLabel}</a>\`;
   (document.body || document.documentElement).appendChild(host);
 })();
 </script>
 `;
+// Force every page into one color theme (site.json "pageTheme": "light" | "dark"; per page "theme" in pages.config.json,
+// or "auto" to follow the visitor's system setting). Pages built as Claude artifacts honor data-theme on <html>.
+const themeTag = (theme) =>
+  theme === "light" || theme === "dark"
+    ? `<meta name="color-scheme" content="${theme}"><script>document.documentElement.setAttribute("data-theme","${theme}")</script>`
+    : "";
 for (const f of fs.readdirSync(PAGES_DIR)) {
   const src = path.join(PAGES_DIR, f), dest = path.join(OUT, "p", f);
   const slug = f.replace(/\.html$/, "");
-  if (f.endsWith(".html") && config[slug]?.backButton !== false) {
-    const html = fs.readFileSync(src, "utf8");
+  if (f.endsWith(".html")) {
+    let html = fs.readFileSync(src, "utf8");
+    const theme = themeTag(config[slug]?.theme ?? site.pageTheme);
+    if (theme) {
+      const m = html.match(/<head[^>]*>/i);
+      html = m ? html.replace(m[0], m[0] + theme) : theme + html;
+    }
+    const withBack = config[slug]?.backButton !== false;
     const i = html.toLowerCase().lastIndexOf("</body>");
-    fs.writeFileSync(dest, i === -1 ? html + backButton : html.slice(0, i) + backButton + html.slice(i));
+    if (withBack) html = i === -1 ? html + backButton : html.slice(0, i) + backButton + html.slice(i);
+    fs.writeFileSync(dest, html);
   } else {
     fs.cpSync(src, dest, { recursive: true });
   }
