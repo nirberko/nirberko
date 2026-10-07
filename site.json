@@ -1,6 +1,11 @@
 {
   "name": "Nir Berko",
-  "tagline": "Research & interactive pages",
+  "tagline": "Research and interactive pages",
   "bio": "Things I've researched, built and wanted to share. Each page below is an interactive report: open it, click around, use the numbers.",
-  "links": []
+  "links": [
+    {
+      "label": "GitHub",
+      "href": "https://github.com/nirberko"
+    }
+  ]
 }
