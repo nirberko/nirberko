@@ -64,6 +64,24 @@ fs.mkdirSync(path.join(OUT, "p"), { recursive: true });
 for (const f of ["index.html", "app.js", "styles.css", "site.json", "404.html", "CNAME", "favicon.svg"]) {
   if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f));
 }
+// Head snippets: every file in snippets/head/ (e.g. analytics) is added to the <head> of every page.
+const SNIPPET_DIR = path.join(ROOT, "snippets", "head");
+const headSnippets = fs.existsSync(SNIPPET_DIR)
+  ? fs.readdirSync(SNIPPET_DIR).filter((f) => f.endsWith(".html")).sort()
+      .map((f) => `<!-- ${f}: injected by scripts/build.mjs -->\n` + fs.readFileSync(path.join(SNIPPET_DIR, f), "utf8").trim()).join("\n")
+  : "";
+const injectHead = (html) => {
+  if (!headSnippets) return html;
+  const close = html.search(/<\/head>/i);
+  if (close !== -1) return html.slice(0, close) + headSnippets + "\n" + html.slice(close);
+  const open = html.match(/<head[^>]*>/i);
+  return open ? html.replace(open[0], open[0] + headSnippets) : headSnippets + html;
+};
+for (const f of ["index.html", "404.html"]) {
+  const fp = path.join(OUT, f);
+  if (fs.existsSync(fp)) fs.writeFileSync(fp, injectHead(fs.readFileSync(fp, "utf8")));
+}
+
 // Cache-bust: point index.html at app.js / styles.css with a content hash, so browsers
 // load the new files right after a deploy instead of a cached copy.
 const hash = (f) => crypto.createHash("sha1").update(fs.readFileSync(path.join(ROOT, f))).digest("hex").slice(0, 10);
@@ -114,6 +132,7 @@ for (const f of fs.readdirSync(PAGES_DIR)) {
       const m = html.match(/<head[^>]*>/i);
       html = m ? html.replace(m[0], m[0] + theme) : theme + html;
     }
+    html = injectHead(html);
     const withBack = config[slug]?.backButton !== false;
     const i = html.toLowerCase().lastIndexOf("</body>");
     if (withBack) html = i === -1 ? html + backButton : html.slice(0, i) + backButton + html.slice(i);

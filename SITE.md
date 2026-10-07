@@ -25,6 +25,12 @@ Use `"light"`, `"dark"`, or `"auto"` to follow the visitor's setting; override o
 
 To remove a page, delete its file from `p/` and push. To change your name, tagline or links, edit `site.json`.
 
+## Analytics
+
+PostHog is installed on every page. The snippet lives in `snippets/head/posthog.html`; the build adds every file in
+`snippets/head/` to the `<head>` of the home page, the 404 page and every page in `p/`. To add another tool, drop its
+snippet in that folder. To remove PostHog, delete the file.
+
 ## Preview locally
 
 ```bash
