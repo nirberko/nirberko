@@ -34,12 +34,18 @@ npx serve _site          # open http://localhost:3000
 
 ### Custom domain
 
-1. Create a file named `CNAME` in the repo root containing just your domain, e.g. `nirberko.com`, and push.
-2. At your domain registrar, add DNS records:
-   - Apex domain (`nirberko.com`): four `A` records pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-     (and optionally `AAAA` records `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`).
-   - Subdomain (`www.nirberko.com` or `research.nirberko.com`): one `CNAME` record pointing to `<your-github-username>.github.io`.
-3. In **Settings → Pages**, enter the domain under **Custom domain**, wait for the DNS check, then tick **Enforce HTTPS**.
+This site deploys with GitHub Actions, so GitHub ignores a `CNAME` file. The domain is set in the repo settings.
+
+1. At your domain registrar, add DNS records:
+   - Apex domain (`example.com`): four `A` records pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
+     Optionally add `AAAA` records `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`,
+     and a `CNAME` for `www` pointing to `nirberko.github.io`.
+   - Subdomain (`research.example.com`): one `CNAME` record pointing to `nirberko.github.io` (no `/nirberko` path).
+   - On Cloudflare, set these records to "DNS only" (grey cloud) until GitHub has issued the HTTPS certificate.
+2. In the repo, go to **Settings → Pages → Custom domain**, enter the domain and save. Wait for the DNS check to pass.
+3. Once the certificate is ready (minutes to about an hour), tick **Enforce HTTPS**.
+4. Optional but recommended: verify the domain under your GitHub account's **Settings → Pages → Add a domain**,
+   so nobody else can point a GitHub Pages site at it.
 
 ## How it works
 
