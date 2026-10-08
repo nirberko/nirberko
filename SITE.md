@@ -25,6 +25,21 @@ Use `"light"`, `"dark"`, or `"auto"` to follow the visitor's setting; override o
 
 To remove a page, delete its file from `p/` and push. To change your name, tagline or links, edit `site.json`.
 
+## Private pages
+
+This repo is public, so a plain page in `p/` can be read on GitHub even when it's hidden from the home page.
+For a page only people with the link should read, encrypt it:
+
+```bash
+node scripts/encrypt-page.mjs ~/somewhere-outside-the-repo/page.html my-page
+```
+
+This writes `p/my-page.html`, which holds only the encrypted page (images included), and prints the link:
+`https://<your-domain>/p/my-page#<key>`. The key after the `#` is never sent to the server and never stored in the repo,
+so keep the link somewhere safe; without it the page can't be opened. To update the page and keep the same link, run it
+again with `PAGE_KEY=<key>`. Add `"hidden": true, "backButton": false, "headSnippets": false` for the page in
+`pages.config.json`, so it stays off the home page and analytics never see the link.
+
 ## Analytics
 
 PostHog is installed on every page. The snippet lives in `snippets/head/posthog.html`; the build adds every file in

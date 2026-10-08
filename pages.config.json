@@ -17,5 +17,10 @@
       "Nationwide"
     ],
     "order": 2
+  },
+  "assemblage-playbook": {
+    "hidden": true,
+    "backButton": false,
+    "headSnippets": false
   }
 }

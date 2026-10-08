@@ -65,6 +65,7 @@ for (const f of ["index.html", "app.js", "styles.css", "site.json", "404.html", 
   if (fs.existsSync(path.join(ROOT, f))) fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f));
 }
 // Head snippets: every file in snippets/head/ (e.g. analytics) is added to the <head> of every page.
+// Opt a page out with "headSnippets": false in pages.config.json.
 const SNIPPET_DIR = path.join(ROOT, "snippets", "head");
 const headSnippets = fs.existsSync(SNIPPET_DIR)
   ? fs.readdirSync(SNIPPET_DIR).filter((f) => f.endsWith(".html")).sort()
@@ -132,7 +133,7 @@ for (const f of fs.readdirSync(PAGES_DIR)) {
       const m = html.match(/<head[^>]*>/i);
       html = m ? html.replace(m[0], m[0] + theme) : theme + html;
     }
-    html = injectHead(html);
+    if (config[slug]?.headSnippets !== false) html = injectHead(html);
     const withBack = config[slug]?.backButton !== false;
     const i = html.toLowerCase().lastIndexOf("</body>");
     if (withBack) html = i === -1 ? html + backButton : html.slice(0, i) + backButton + html.slice(i);
