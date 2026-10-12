@@ -22,5 +22,10 @@
     "hidden": true,
     "backButton": false,
     "headSnippets": false
+  },
+  "the-berko-playbook": {
+    "hidden": true,
+    "backButton": false,
+    "headSnippets": false
   }
 }
